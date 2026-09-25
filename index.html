@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MausamTrack India | Citizen Weather Network</title>
+  <!-- Link to External Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header>
+    <nav>
+      <div class="logo">
+        🌧️ MausamTrack India
+      </div>
+      <ul class="nav-links">
+        <li><a href="#gallery">Observations</a></li>
+        <li><a href="#criteria">Guidelines & Criteria</a></li>
+        <li><a href="#report">Report Weather</a></li>
+        <li><button class="btn btn-outline" id="signInBtn">Sign In</button></li>
+        <li><button class="btn btn-primary" id="registerBtn">Register</button></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Real-Time Citizen Weather Network</h1>
+      <p>Empowering districts across India with hyper-local cloud tracking, monsoon updates, and grassroots rainfall alerts.</p>
+      <a href="page2.html" class="btn btn-accent">Submit Live Weather Report</a>
+    <a href="page1.html" class="btn btn-accent">Quick Report</a>
+    <a href="page5.html" class="btn btn-accent">Dashboard</a>
+    <a href="sources.html" class="btn btn-accent">Weather Alerts</a>
+    <a href="test.html" class="btn btn-accent">Interactive Weather Map</a>
+    </div>
+  </section>
+
+  <!-- Gallery: Weather Patterns of India -->
+  <section class="gallery-section" id="gallery">
+    <div class="section-title">
+      <h2>India Weather Patterns & Live Imagery</h2>
+      <p>Tracking monsoon fronts, convective storm clouds, and localized rainfall patterns across regions.</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-card">
+        <img src="images/WhatsApp Image 2026-09-25 at 15.38.10 (1).jpeg" alt="Monsoon Rain over fields" />
+        <div class="info">
+          <h3>Southwest Monsoon Showers</h3>
+          <p>Continuous rainfall activity recorded over agricultural belts and catchment basins.</p>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img src="images/WhatsApp Image 2026-09-25 at 15.38.10.jpeg"alt="Cumulonimbus Clouds" />
+        <div class="info">
+          <h3>Cumulonimbus Cloud Formations</h3>
+          <p>Towering cloud decks signaling pre-monsoon squalls and localized thunder activity.</p>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img src="images/WhatsApp Image 2026-09-25 at 15.38.11.jpeg" alt="Lightning Strike" />
+        <div class="info">
+          <h3>Convective Lightning & Downpours</h3>
+          <p>Severe electrical activity and rapid localized barometric drops during sudden storms.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Criteria & Form Instructions -->
+  <section class="criteria-section" id="criteria">
+    <div class="criteria-container">
+      <div class="section-title">
+        <h2>Reporting Criteria & Instructions</h2>
+        <p>Ensure your observation data meets verification standards prior to submission.</p>
+      </div>
+
+      <div class="criteria-card">
+        <h3>1. Guidelines on How to Fill the Weather Form</h3>
+        <p>To maintain high data quality, follow these instructions when logging your update:</p>
+        <ul>
+          <li><strong>Pinpoint Specificity:</strong> Provide your exact district, tehsil, or city sector rather than a general broad area.</li>
+          <li><strong>Observation Timing:</strong> Note the actual start time and peak time of rainfall or wind gusts, not just submission time.</li>
+          <li><strong>Rainfall Scale:</strong> Categorize precipitation carefully (e.g., Light Drizzle, Moderate Continuous, Intense Downpour/Cloudburst).</li>
+        </ul>
+      </div>
+
+      <div class="criteria-card">
+        <h3>2. Verification Criteria for Weather Alerts</h3>
+        <p>Submissions flagged as high-severity or emergency hazards require the following criteria:</p>
+        <ul>
+          <li><strong>Photo Evidence:</strong> Upload clear, unedited visual evidence showing cloud build-up, water levels, or hail size.</li>
+          <li><strong>Device Geotagging:</strong> Ensure device location metadata is preserved when taking observation photos.</li>
+          <li><strong>Account Verification:</strong> Standard updates can be logged anonymously, but hazard warnings require an authenticated citizen profile.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <!-- Sign In Modal -->
+  <div class="modal-overlay" id="signInModal">
+    <div class="modal-content">
+      <button class="close-btn" data-close="signInModal">&times;</button>
+      <h3>Sign In to MausamTrack</h3>
+      <form id="signInForm">
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" placeholder="name@example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" >Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div class="modal-overlay" id="registerModal">
+    <div class="modal-content">
+      <button class="close-btn" data-close="registerModal">&times;</button>
+      <h3>Create an Account</h3>
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="regName">Full Name</label>
+          <input type="text" id="regName" placeholder="Rohan Sharma" required />
+        </div>
+        <div class="form-group">
+          <label for="regEmail">Email Address</label>
+          <input type="email" id="regEmail" placeholder="rohan@example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Create Password</label>
+          <input type="password" id="regPassword" placeholder="Min. 8 characters" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+      </form>
+    </div>
+  </div>
+  <iframe width="100%" height="450" src="http://embed.windy.com/embed2.html?lat=28.61&lon=77.20&zoom=5&level=surface&overlay=wind&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C%22" frameborder="0"></iframe>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 MausamTrack India Network. Citizen Meteorological Observation Platform.</p>
+  </footer>
+
+  <!-- Link to External JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>

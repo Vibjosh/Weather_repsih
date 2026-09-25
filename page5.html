@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National Weather Analytics Platform</title>
+    <link rel="stylesheet" href="page5.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>National Weather Analytics Platform</h1>
+        <p>Collect • Verify • Analyze • Predict • Alert</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#verification">How Verification Works</a>
+        <a href="#recent">Recent Reports</a>
+        <a href="page2.html">Submit a Report</a>
+    </nav>
+
+    <main>
+        <section id="dashboard">
+            <h2>Weather Dashboard</h2>
+            <p class="section-sub">Live averages from reports that passed verification (excludes anything flagged Suspicious).</p>
+
+            <div class="cards">
+
+                <div class="card glow">
+                    <h3>Temperature</h3>
+                    <p id="statTemp">No data yet</p>
+                </div>
+
+                <div class="card glow">
+                    <h3>Humidity</h3>
+                    <p id="statHumidity">No data yet</p>
+                </div>
+
+                <div class="card glow">
+                    <h3>Rainfall</h3>
+                    <p id="statRainfall">No data yet</p>
+                </div>
+
+                <div class="card glow">
+                    <h3>Flood Risk</h3>
+                    <p id="statFlood">Unknown</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="verification">
+
+            <h2>How Verification Works — Example</h2>
+
+            <div class="verification-box">
+
+                <p><strong>Reported Rainfall:</strong> 120 mm</p>
+                <p><strong>Nearby Stations:</strong> 5–8 mm</p>
+                <p><strong>Radar Agreement:</strong> Low</p>
+
+                <div class="score">
+                    <h3>Credibility Score</h3>
+                    <p>18%</p>
+                </div>
+
+                <p class="warning">⚠ Suspicious Report</p>
+
+                <p>
+                    This is a worked example — a real submission this far off from
+                    live conditions would score this low and be flagged for review.
+                </p>
+
+            </div>
+
+        </section>
+
+        <section id="recent">
+            <h2>Recent Submitted Reports</h2>
+            <div id="recentReports"></div>
+        </section>
+
+        <section id="alerts">
+
+            <h2>Weather Alerts</h2>
+
+            <div class="alert glow">
+                <h3>Heavy Rainfall Alert</h3>
+                <p>Triggered automatically once verified reports show sustained heavy rainfall in a district.</p>
+            </div>
+
+            <div class="alert glow">
+                <h3>Flood Risk</h3>
+                <p>Based on the flood-risk reading in the dashboard above.</p>
+            </div>
+
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Hackathon Prototype | National Weather Analytics Platform</p>
+    </footer>
+
+    <script src="api.js"></script>
+    <script src="page5.js"></script>
+
+</body>
+</html>

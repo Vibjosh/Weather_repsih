@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report a Weather Update</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1B2430;
+    --bg-glow:#26364A;
+    --card:#F7F4EC;
+    --card-border:#E4DFD1;
+    --ink:#201E1A;
+    --muted:#6B6759;
+    --accent:#2F7A96;
+    --accent-dark:#215C71;
+    --on-accent:#FFFFFF;
+    --ok:#4C8C4A;
+    --pending:#C98A2E;
+    --severe:#B84438;
+    --line:#E4DFD1;
+    --radius:10px;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(60% 45% at 15% 0%, var(--bg-glow) 0%, transparent 60%),
+      var(--bg);
+    font-family:'Inter', sans-serif;
+    color:var(--ink);
+    padding:32px 16px 64px;
+  }
+
+  .page{
+    max-width:480px;
+    margin:0 auto;
+  }
+
+  .home-link{
+    display:inline-block;
+    color:#8FD3E8;
+    text-decoration:none;
+    font-size:0.85rem;
+    margin-bottom:10px;
+  }
+  .home-link:hover{ text-decoration:underline; }
+
+  .intro h1{
+    font-family:'Archivo', sans-serif;
+    font-weight:800;
+    font-size:1.7rem;
+    line-height:1.2;
+    color:#F4F1E9;
+    margin:0 0 8px;
+  }
+
+  .intro p{
+    color:#B9C2CC;
+    font-size:0.95rem;
+    line-height:1.5;
+    margin:0 0 24px;
+    max-width:38ch;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:14px;
+    padding:22px;
+  }
+
+  .field{ margin-bottom:20px; }
+  .field-row{ display:flex; gap:12px; margin-bottom:20px; }
+  .field-row .field{ flex:1; margin-bottom:0; }
+
+  label{
+    display:block;
+    font-size:0.85rem;
+    font-weight:600;
+    margin-bottom:8px;
+  }
+
+  input[type="text"], input[type="tel"], textarea{
+    width:100%;
+    font-family:'Inter', sans-serif;
+    font-size:0.95rem;
+    padding:11px 12px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:#FFFFFF;
+    color:var(--ink);
+  }
+
+  input.invalid, .event-grid.invalid{
+    border-color:var(--severe);
+  }
+
+  textarea{ resize:vertical; font-family:inherit; }
+
+  input:focus-visible, textarea:focus-visible, button:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+  }
+
+  /* Event type grid */
+  .event-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+  }
+
+  .event-btn{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    padding:12px 4px;
+    min-height:66px;
+    background:#FFFFFF;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    font-family:'Inter', sans-serif;
+    font-size:0.72rem;
+    color:var(--ink);
+    cursor:pointer;
+  }
+
+  .event-btn span{ font-size:1.3rem; }
+
+  .event-btn.selected{
+    background:var(--accent);
+    border-color:var(--accent-dark);
+    color:var(--on-accent);
+  }
+
+  .error{
+    color:var(--severe);
+    font-size:0.8rem;
+    margin:8px 0 0;
+  }
+  .error[hidden]{ display:none; }
+
+  /* Location */
+  .location-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    width:100%;
+    padding:11px 12px;
+    background:#FFFFFF;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    font-family:'Inter', sans-serif;
+    font-size:0.9rem;
+    font-weight:500;
+    color:var(--accent-dark);
+    cursor:pointer;
+    margin-bottom:6px;
+  }
+
+  .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--accent);
+  }
+  .dot.pulsing{ animation:pulse 1s ease-in-out infinite; }
+  @keyframes pulse{
+    0%,100%{ opacity:1; } 50%{ opacity:0.3; }
+  }
+
+  .hint{
+    font-size:0.8rem;
+    color:var(--muted);
+    margin:0 0 20px;
+  }
+
+  /* Dropzone */
+  .dropzone{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border:1px dashed var(--line);
+    border-radius:var(--radius);
+    padding:16px;
+    cursor:pointer;
+    font-size:0.85rem;
+    color:var(--muted);
+    background:#FFFFFF;
+  }
+
+  .thumb{
+    width:44px; height:44px;
+    object-fit:cover;
+    border-radius:6px;
+  }
+  .thumb[hidden]{ display:none; }
+
+  .submit-btn{
+    width:100%;
+    padding:13px;
+    background:var(--accent);
+    color:var(--on-accent);
+    border:none;
+    border-radius:var(--radius);
+    font-family:'Inter', sans-serif;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .submit-btn:hover{ background:var(--accent-dark); }
+
+  .success{
+    color:var(--ok);
+    font-size:0.85rem;
+    font-weight:500;
+    margin:12px 0 0;
+    text-align:center;
+  }
+  .success[hidden]{ display:none; }
+
+  /* Recent reports */
+  .recent{ margin-top:28px; }
+  .recent h2{
+    font-family:'Archivo', sans-serif;
+    font-size:1rem;
+    color:#F4F1E9;
+    margin:0 0 12px;
+  }
+
+  #recentList{
+    list-style:none;
+    margin:0; padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .recent-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:var(--radius);
+    padding:12px 14px;
+  }
+
+  .recent-icon{ font-size:1.4rem; }
+  .recent-body{ flex:1; min-width:0; }
+  .recent-title{ margin:0; font-weight:600; font-size:0.9rem; }
+  .recent-sub{ margin:2px 0 0; font-size:0.8rem; color:var(--muted); }
+  .recent-time{ margin:2px 0 0; font-size:0.75rem; color:var(--muted); }
+
+  .pill{
+    font-size:0.7rem;
+    font-weight:600;
+    padding:4px 9px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .pill.high{ background:#DCEEDB; color:#2F6B2D; }
+  .pill.medium{ background:#F5E4C3; color:#8A5A16; }
+  .pill.low{ background:#F3D9D6; color:#8A2E23; }
+
+  @media (prefers-reduced-motion: reduce){
+    .dot.pulsing{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="intro">
+    <a href="index.html" class="home-link">← Home</a>
+    <h1>Report a weather update</h1>
+    <p>Your report helps verify what's actually happening on the ground across India.</p>
+  </div>
+
+  <form id="reportForm" class="card" novalidate>
+
+    <div class="field">
+      <label>What are you seeing?</label>
+      <div class="event-grid" id="eventGrid">
+        <button type="button" class="event-btn" data-value="rain"><span>🌧️</span>Rain</button>
+        <button type="button" class="event-btn" data-value="thunderstorm"><span>⛈️</span>Thunderstorm</button>
+        <button type="button" class="event-btn" data-value="flooding"><span>🌊</span>Flooding</button>
+        <button type="button" class="event-btn" data-value="heatwave"><span>🌡️</span>Heatwave</button>
+        <button type="button" class="event-btn" data-value="fog"><span>🌫️</span>Fog</button>
+        <button type="button" class="event-btn" data-value="dust_storm"><span>🌪️</span>Dust storm</button>
+        <button type="button" class="event-btn" data-value="strong_wind"><span>💨</span>Strong wind</button>
+      </div>
+      <p class="error" id="eventError" hidden>Pick one option.</p>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="city">City</label>
+        <input type="text" id="city" placeholder="e.g. Haldwani">
+      </div>
+      <div class="field">
+        <label for="state">State</label>
+        <input type="text" id="state" placeholder="e.g. Uttarakhand">
+      </div>
+    </div>
+
+    <button type="button" class="location-btn" id="locateBtn">
+      <span class="dot" id="locateDot"></span>
+      Use my current location
+    </button>
+    <p class="hint" id="coordsText">Location not added yet.</p>
+
+    <div class="field">
+      <label for="photo">Photo or video (helps verification)</label>
+      <label class="dropzone" for="photo">
+        <img id="thumb" class="thumb" hidden alt="Selected photo preview">
+        <span id="dropzoneText">Tap to choose a file</span>
+      </label>
+      <input type="file" id="photo" accept="image/*,video/*" hidden>
+    </div>
+
+    <div class="field">
+      <label for="description">What's happening?</label>
+      <textarea id="description" rows="3" placeholder="e.g. Waterlogging near the market since 4pm"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="phone">Contact number (optional, for follow-up)</label>
+      <input type="tel" id="phone" placeholder="10-digit mobile number">
+    </div>
+
+    <button type="submit" class="submit-btn">Send report</button>
+    <p class="success" id="successMsg" hidden></p>
+  </form>
+
+  <section class="recent" id="recentSection" hidden>
+    <h2>Recent reports</h2>
+    <ul id="recentList"></ul>
+  </section>
+
+</div>
+
+<script src="api.js"></script>
+<script src="page1.js"></script>
+
+</body>
+</html>

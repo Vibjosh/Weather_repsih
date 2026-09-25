@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Weather Map</title>
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+
+    #map {
+      flex: 1;
+      height: 100%;
+    }
+
+    #sidebar {
+      width: 320px;
+      background: #1e1e24;
+      color: #f5f5f5;
+      padding: 24px;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: #2b2b36;
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .temp {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #64b5f6;
+    }
+
+    .muted {
+      color: #9e9e9e;
+      font-size: 0.95rem;
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <div id="sidebar">
+    <a href="index.html" style="color:#64b5f6; text-decoration:none; font-size:0.85rem;">← Home</a>
+    <h2>Weather Details</h2>
+    <p class="muted">1. Click a state to highlight it.<br>2. Click a pink circle marker for that city.</p>
+    
+    <div id="weather-card" class="card" style="display: none;">
+      <h3 id="city-name" style="margin-top:0;">—</h3>
+      <div id="city-temp" class="temp">—°C</div>
+      <p id="city-condition" style="color: #ffb74d; font-weight: bold; margin: 4px 0;">—</p>
+      <p id="city-feels" class="muted">Feels like: —°C</p>
+      <p id="city-humidity" class="muted">Humidity: —%</p>
+      <p id="city-wind" class="muted">Wind: — km/h</p>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <script>
+    // 1. Initialize Map
+    const map = L.map('map').setView([22.5, 80], 5);
+
+    // Free OpenStreetMap tiles (no API key needed, no watermarks)
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // 2. City coordinates per State
+    const citiesData = {
+  // Add Uttaranchal so it matches the GeoJSON property
+  "Uttaranchal": [
+    { name: "Dehradun", lat: 30.3165, lng: 78.0322 },
+    { name: "Rishikesh", lat: 30.0869, lng: 78.2676 },
+    { name: "Haridwar", lat: 29.9457, lng: 78.1642 },
+    { name: "Nainital", lat: 29.3919, lng: 79.4542 }
+  ],
+  "Uttarakhand": [
+    { name: "Dehradun", lat: 30.3165, lng: 78.0322 },
+    { name: "Rishikesh", lat: 30.0869, lng: 78.2676 },
+    { name: "Haridwar", lat: 29.9457, lng: 78.1642 },
+    { name: "Nainital", lat: 29.3919, lng: 79.4542 }
+  ],
+  "Maharashtra": [
+    { name: "Mumbai", lat: 19.0760, lng: 72.8777 },
+    { name: "Pune", lat: 18.5204, lng: 73.8567 },
+    { name: "Nagpur", lat: 21.1458, lng: 79.0882 }
+  ],
+  "Karnataka": [
+    { name: "Bengaluru", lat: 12.9716, lng: 77.5946 },
+    { name: "Mysuru", lat: 12.2958, lng: 76.6394 }
+  ]
+}
+
+    let activeStateLayer = null;
+    let cityMarkersGroup = L.layerGroup().addTo(map);
+
+    function defaultStyle() {
+      return {
+        fillColor: '#3388ff',
+        weight: 1.5,
+        opacity: 1,
+        color: '#4a90e2',
+        fillOpacity: 0.15
+      };
+    }
+
+    function highlightStyle() {
+      return {
+        fillColor: '#ff9800',
+        weight: 3,
+        opacity: 1,
+        color: '#e65100',
+        fillOpacity: 0.35
+      };
+    }
+
+    // 3. WMO Weather Code Translator
+    function getWeatherDescription(code) {
+      const codes = {
+        0: 'Clear sky',
+        1: 'Mainly clear',
+        2: 'Partly cloudy',
+        3: 'Overcast',
+        45: 'Foggy',
+        48: 'Depositing rime fog',
+        51: 'Light drizzle',
+        53: 'Moderate drizzle',
+        55: 'Dense drizzle',
+        61: 'Slight rain',
+        63: 'Moderate rain',
+        65: 'Heavy rain',
+        71: 'Slight snow',
+        73: 'Moderate snow',
+        75: 'Heavy snow',
+        80: 'Rain showers',
+        81: 'Moderate rain showers',
+        82: 'Violent rain showers',
+        95: 'Thunderstorm',
+        96: 'Thunderstorm with hail',
+        99: 'Heavy thunderstorm'
+      };
+      return codes[code] || 'Clear / Mild';
+    }
+
+    // 4. Fetch Weather function
+    async function fetchWeather(city) {
+      const card = document.getElementById('weather-card');
+      const nameEl = document.getElementById('city-name');
+      const tempEl = document.getElementById('city-temp');
+      const condEl = document.getElementById('city-condition');
+      const feelsEl = document.getElementById('city-feels');
+      const humEl = document.getElementById('city-humidity');
+      const windEl = document.getElementById('city-wind');
+
+      card.style.display = 'block';
+      nameEl.innerText = city.name;
+      tempEl.innerText = 'Loading...';
+      condEl.innerText = '';
+      feelsEl.innerText = 'Feels like: —';
+      humEl.innerText = 'Humidity: —';
+      windEl.innerText = 'Wind: —';
+
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lng}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const current = data.current;
+
+        tempEl.innerText = `${Math.round(current.temperature_2m)}°C`;
+        condEl.innerText = getWeatherDescription(current.weather_code);
+        feelsEl.innerText = `Feels like: ${Math.round(current.apparent_temperature)}°C`;
+        humEl.innerText = `Humidity: ${current.relative_humidity_2m}%`;
+        windEl.innerText = `Wind: ${current.wind_speed_10m} km/h`;
+      } catch (err) {
+        console.error("Open-Meteo Error:", err);
+        tempEl.innerText = 'Error';
+        condEl.innerText = 'Could not load data.';
+      }
+    }
+
+    // 5. Select State & Spawn City Dots
+    function selectState(stateName, layer) {
+      if (activeStateLayer) {
+        activeStateLayer.setStyle(defaultStyle());
+      }
+      
+      layer.setStyle(highlightStyle());
+      activeStateLayer = layer;
+      map.fitBounds(layer.getBounds(), { padding: [30, 30] });
+
+      cityMarkersGroup.clearLayers();
+      let normalizedStateName = stateName;
+      if(stateName === "Uttarakhand") {
+        normalizedStateName = "Uttaranchal"; // Match the key in citiesData
+      }
+      if(stateName === "Orissa") {
+        normalizedStateName = "Odisha"; // Match the key in citiesData
+      }
+
+      const cities = citiesData[normalizedStateName] || [];
+      cities.forEach(city => {
+        const marker = L.circleMarker([city.lat, city.lng], {
+          radius: 8,
+          fillColor: "#e91e63",
+          color: "#ffffff",
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.95
+        });
+
+        marker.bindTooltip(city.name, { permanent: true, direction: 'top', offset: [0, -6] });
+
+        marker.on('click', (e) => {
+          L.DomEvent.stopPropagation(e);
+          fetchWeather(city);
+        });
+
+        cityMarkersGroup.addLayer(marker);
+      });
+    }
+
+    // 6. Load State GeoJSON
+    fetch('https://raw.githubusercontent.com/Subhash9325/GeoJson-Data-of-Indian-States/master/Indian_States')
+      .then(res => res.json())
+      .then(geoData => {
+        L.geoJSON(geoData, {
+          style: defaultStyle,
+          onEachFeature: (feature, layer) => {
+            const stateName = feature.properties.NAME_1 || feature.properties.st_nm || feature.properties.NAME;
+            
+            layer.on({
+              click: () => selectState(stateName, layer),
+              mouseover: () => {
+                if (layer !== activeStateLayer) layer.setStyle({ fillOpacity: 0.3 });
+              },
+              mouseout: () => {
+                if (layer !== activeStateLayer) layer.setStyle(defaultStyle());
+              }
+            });
+          }
+        }).addTo(map);
+      })
+      .catch(err => console.error("GeoJSON failed to load:", err));
+  </script>
+</body>
+</html>

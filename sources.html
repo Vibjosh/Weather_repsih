@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Weather Source Comparison</title>
+
+    <link rel="stylesheet" href="sources.css">
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="home-link">← Home</a>
+        <h1>National Weather Analytics Platform</h1>
+        <p>Multi-Source Weather Verification</p>
+    </header>
+
+    <main>
+
+        <section class="search-box">
+
+            <h2>Check Weather Sources</h2>
+
+            <input
+                type="text"
+                id="location"
+                placeholder="Enter city e.g. Pantnagar"
+            >
+
+            <button onclick="getWeather()">
+                Fetch Weather
+            </button>
+
+        </section>
+
+
+        <section class="sources">
+
+            <!-- OPEN METEO -->
+
+            <div class="weather-card">
+
+                <h2>🌐 Open-Meteo</h2>
+
+                <p class="source-status" id="openStatus">
+                    Waiting for data...
+                </p>
+
+                <div class="weather-data">
+
+                    <p>
+                        🌡️ Temperature:
+                        <strong id="openTemp">--</strong> °C
+                    </p>
+
+                    <p>
+                        💧 Humidity:
+                        <strong id="openHumidity">--</strong> %
+                    </p>
+
+                    <p>
+                        🌧️ Rain:
+                        <strong id="openRain">--</strong> mm
+                    </p>
+
+                    <p>
+                        💨 Wind:
+                        <strong id="openWind">--</strong> km/h
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- WEATHER API -->
+
+            <div class="weather-card">
+
+                <h2>🌐 WeatherAPI</h2>
+
+                <p class="source-status" id="apiStatus">
+                    Waiting for data...
+                </p>
+
+                <div class="weather-data">
+
+                    <p>
+                        🌡️ Temperature:
+                        <strong id="apiTemp">--</strong> °C
+                    </p>
+
+                    <p>
+                        💧 Humidity:
+                        <strong id="apiHumidity">--</strong> %
+                    </p>
+
+                    <p>
+                        🌧️ Rain:
+                        <strong id="apiRain">--</strong> mm
+                    </p>
+
+                    <p>
+                        💨 Wind:
+                        <strong id="apiWind">--</strong> km/h
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- COMPARISON -->
+
+        <section class="comparison">
+
+            <h2>🔍 Source Comparison</h2>
+
+            <p id="temperatureDifference">
+                Temperature difference: --
+            </p>
+
+            <p id="rainDifference">
+                Rainfall difference: --
+            </p>
+
+            <div id="verificationResult">
+                Waiting for data...
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="sources.js"></script>
+
+</body>
+
+</html>

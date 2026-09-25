@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Weather Report Submission</title>
+
+    <link rel="stylesheet" href="page2.css">
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="home-link">← Home</a>
+        <h1>National Weather Analytics Platform</h1>
+        <p>Submit a weather observation for verification</p>
+    </header>
+
+
+    <main>
+
+        <div class="form-container">
+
+            <h2>Weather Report</h2>
+
+            <p class="description">
+                Enter the current weather conditions at your location.
+                Your report will be analyzed and verified using multiple
+                weather data sources.
+            </p>
+
+
+            <!-- Reporter Information -->
+
+            <h3>Reporter Information</h3>
+
+            <label for="reporter-id">Reporter ID</label>
+            <input type="text" id="reporter-id"
+                   placeholder="Enter your reporter ID">
+
+
+            <!-- Location -->
+
+            <label for="location">Location</label>
+            <input type="text" id="location"
+                   placeholder="City / District / State">
+        <!-- Photo-->       
+         <label for="file">Enter photo or video</label>
+         <input type="file" id="file">
+
+
+            <!-- Weather Information -->
+
+            <h3>Weather Information</h3>
+
+            <label for="temperature">🌡️Temperature (°C)</label>
+            <input type="number" id="temperature"
+                   placeholder="Example: 28">
+
+
+            <label for="humidity">🫧Humidity (%)</label>
+            <input type="number" id="humidity"
+                   placeholder="Example: 70">
+
+
+            <label for="rainfall">💧Rainfall (mm)</label>
+            <input type="number" id="rainfall"
+                   placeholder="Example: 25">
+
+
+            <label for="wind">🍃Wind Speed (km/h)</label>
+            <input type="number" id="wind"
+                   placeholder="Example: 15">
+
+
+            <label for="weather">🌤️Weather Condition</label>
+
+            <select id="weather">
+
+                <option value="">Select condition</option>
+                <option>Sunny☀️</option>
+                <option>Cloudy☁️</option>
+                <option>Light Rain🌦️</option>
+                <option>Heavy Rain🌧️</option>
+                <option>Thunderstorm⛈️</option>
+                <option>Fog🌫️</option>
+                <option>Dust Storm🌪️</option>
+
+            </select>
+
+
+            <!-- Additional Information -->
+
+            <label for="description">Additional Information</label>
+
+            <textarea id="description"
+                      placeholder="Describe the weather conditions..."></textarea>
+
+
+            <!-- Submit -->
+
+                <button type="button" onclick="submitReport()">
+                    Submit Weather Report
+                </button>
+
+                <div id="resultBox" class="result-box" hidden></div>
+
+        </div>
+
+    </main>
+
+
+    <footer>
+
+        <p>
+            National Weather Analytics Platform
+        </p>
+
+        <p>
+            Collect • Verify • Analyze • Predict • Alert
+        </p>
+
+    </footer>
+
+    <script src="api.js"></script>
+    <script src="page2.js"></script>
+
+</body>
+
+</html>
